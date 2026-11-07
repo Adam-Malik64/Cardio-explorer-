@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 
 export default function NotFoundView() {
   return (
-    <section className="page-shell">
+    <section className="container page page-shell">
       <h1>Page not found</h1>
       <p className="lead">We couldn't find that page.</p>
       <Link to="/" className="button">

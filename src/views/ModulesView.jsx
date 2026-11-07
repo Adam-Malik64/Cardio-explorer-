@@ -4,7 +4,7 @@ import { categories, modules } from '../content/modules';
 
 export default function ModulesView() {
   return (
-    <>
+    <div className="container page">
       <header className="page-header">
         <h1>Learning Modules</h1>
         <p className="lead">Pick a topic to start learning.</p>
@@ -25,6 +25,6 @@ export default function ModulesView() {
           </ul>
         </section>
       ))}
-    </>
+    </div>
   );
 }

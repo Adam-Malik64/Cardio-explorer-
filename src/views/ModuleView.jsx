@@ -14,7 +14,7 @@ export default function ModuleView() {
   const next = modules[index + 1];
 
   return (
-    <article className="module">
+    <article className="container page module">
       <Link to="/modules" className="back-link">
         ← All modules
       </Link>
