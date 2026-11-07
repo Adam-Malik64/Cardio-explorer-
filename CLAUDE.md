@@ -16,6 +16,7 @@ An interactive educational web application designed to teach students and genera
 - Keep components self-contained and well-commented.
 
 ## Project notes
+- Product brief (audience, the 4 core features, success metrics): `BRIEF.md`. Build features to match it.
 - Stack: Vite + React (JavaScript/JSX) + React Router. Run with `npm run dev`, build with `npm run build`.
 - Modules and learning areas are defined only in `src/content/modules.js`.
 - Pages live in `src/views/`, shared layout in `src/components/layout/`, all styles in `src/styles/global.css` (design tokens on `:root`).
