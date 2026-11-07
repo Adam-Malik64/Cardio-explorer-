@@ -1,6 +1,6 @@
 // /modules/:slug: one module. Shows its outline until the lesson content is written.
 import { Link, useParams } from 'react-router';
-import { findCategory, findModule, modules } from '../content/modules';
+import { findModule, modules } from '../content/modules';
 import NotFoundView from './NotFoundView';
 
 export default function ModuleView() {
@@ -21,7 +21,7 @@ export default function ModuleView() {
 
       <header className="page-header">
         <p className="eyebrow">
-          {findCategory(module.category)?.title} · Module {index + 1} of {modules.length}
+          {module.kind} · Module {index + 1} of {modules.length}
         </p>
         <h1>
           <span aria-hidden="true">{module.icon} </span>
@@ -31,7 +31,7 @@ export default function ModuleView() {
       </header>
 
       <section className="card">
-        <h2>Topics to cover</h2>
+        <h2>What you’ll explore</h2>
         <ul className="topic-list">
           {module.topics.map((topic) => (
             <li key={topic}>{topic}</li>
@@ -39,7 +39,7 @@ export default function ModuleView() {
         </ul>
       </section>
 
-      <p className="placeholder-note">Lesson content coming soon.</p>
+      <p className="placeholder-note">The interactive version of this module is coming soon.</p>
 
       <nav aria-label="Module" className="module-pager">
         {prev ? <Link to={`/modules/${prev.slug}`}>← {prev.title}</Link> : <span />}

@@ -15,8 +15,9 @@ export default function Hero() {
             Get to know the muscle that <span className="accent-text">never takes a break</span>.
           </h1>
           <p className="lead">
-            Short, interactive modules on how your heart is built, the everyday habits that keep it
-            strong, and the numbers that show how it’s doing, from heart rate to reading an ECG.
+            Explore the four chambers, follow blood as it flows through your body, simulate your
+            pulse across heart rate zones, and test how daily habits affect your heart, all in one
+            interactive app.
           </p>
           <div className="hero-actions">
             <Link to={`/modules/${firstModule.slug}`} className="button button-large">
@@ -27,7 +28,7 @@ export default function Hero() {
             </Link>
           </div>
           <p className="hero-meta">
-            {modules.length} modules · Free · Made for students and curious learners
+            {modules.length} interactive modules · Free · Made for middle and high school biology
           </p>
         </div>
 

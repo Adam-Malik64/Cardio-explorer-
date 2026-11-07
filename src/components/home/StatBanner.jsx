@@ -4,7 +4,7 @@ import { modules } from '../../content/modules';
 import { stats } from '../../content/stats';
 
 export default function StatBanner() {
-  const firstHabit = modules.find((m) => m.category === 'habits');
+  const habitsModule = modules.find((m) => m.theme === 'habits');
 
   return (
     <section className="stat-banner" aria-labelledby="stats-title">
@@ -30,10 +30,10 @@ export default function StatBanner() {
           they’re habits you can learn about and change.
         </p>
         <Link
-          to={firstHabit ? `/modules/${firstHabit.slug}` : '/modules'}
+          to={habitsModule ? `/modules/${habitsModule.slug}` : '/modules'}
           className="button button-inverse"
         >
-          Explore the habits modules
+          Take the habits quiz
         </Link>
       </div>
     </section>

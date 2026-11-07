@@ -1,33 +1,24 @@
-// Landing page overview of the learning areas and every module, read from content/modules.js.
+// Landing page overview of the four core modules from BRIEF.md (read from content/modules.js).
 import ModuleCard from '../ModuleCard';
-import { categories, modules } from '../../content/modules';
+import { modules } from '../../content/modules';
 
 export default function FeatureGrid() {
   return (
     <section className="section" aria-labelledby="features-title">
       <div className="container">
         <header className="section-header">
-          <p className="eyebrow">What you’ll learn</p>
-          <h2 id="features-title">Three areas, {modules.length} bite-sized modules</h2>
+          <p className="eyebrow">What you’ll explore</p>
+          <h2 id="features-title">Four interactive ways to learn about your heart</h2>
           <p className="lead">
-            Move from how the heart works, to how to look after it, to the measurements that show
-            how it’s doing.
+            See how the heart is built, watch blood flow, test how habits affect your heart, and
+            review the key words, all in one place.
           </p>
         </header>
 
-        <ul className="area-list">
-          {categories.map((category) => (
-            <li key={category.id} className={`area cat-${category.id}`}>
-              <h3>{category.title}</h3>
-              <p>{category.description}</p>
-            </li>
-          ))}
-        </ul>
-
-        <ul className="card-grid">
-          {modules.map((module) => (
+        <ul className="card-grid feature-grid">
+          {modules.map((module, index) => (
             <li key={module.slug}>
-              <ModuleCard module={module} showCategory />
+              <ModuleCard module={module} index={index} />
             </li>
           ))}
         </ul>

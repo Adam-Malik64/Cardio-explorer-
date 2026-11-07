@@ -1,7 +1,6 @@
-// Site footer: brand, quick links to each learning area's first module, and the
-// "not medical advice" disclaimer.
+// Site footer: brand, quick links to each module, and the "not medical advice" disclaimer.
 import { Link } from 'react-router';
-import { categories, modules } from '../../content/modules';
+import { modules } from '../../content/modules';
 
 export default function Footer() {
   return (
@@ -12,22 +11,19 @@ export default function Footer() {
             <span className="brand-mark" aria-hidden="true">♥</span>
             Cardio Explorer
           </Link>
-          <p className="muted">Interactive lessons on how your heart works and how to keep it healthy.</p>
+          <p className="muted">
+            Interactive heart health learning for middle and high school students.
+          </p>
         </div>
 
         <nav aria-label="Footer" className="footer-links">
           <h2 className="footer-heading">Learn</h2>
           <ul>
-            {categories.map((category) => {
-              const first = modules.find((m) => m.category === category.id);
-              return (
-                first && (
-                  <li key={category.id}>
-                    <Link to={`/modules/${first.slug}`}>{category.title}</Link>
-                  </li>
-                )
-              );
-            })}
+            {modules.map((module) => (
+              <li key={module.slug}>
+                <Link to={`/modules/${module.slug}`}>{module.title}</Link>
+              </li>
+            ))}
             <li>
               <Link to="/modules">All modules</Link>
             </li>
