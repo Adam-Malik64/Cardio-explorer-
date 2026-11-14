@@ -2,8 +2,10 @@
 import { Link } from 'react-router';
 import { modules } from '../content/modules';
 import { DISCLAIMER } from '../content/disclaimer';
+import useDocumentTitle from '../components/layout/useDocumentTitle';
 
 export default function AboutView() {
+  useDocumentTitle('About');
   return (
     <div className="container page about">
       <header className="page-header">
@@ -43,8 +45,13 @@ export default function AboutView() {
       <section className="card" aria-labelledby="about-data">
         <h2 id="about-data">All data is synthetic</h2>
         <p>
-          Every number, heart rate, quiz question and example in this app is synthetic, fake demo
-          data created for learning. None of it comes from real patients or real people.
+          All data in this app is synthetic, fake demo data: the heart rates in the simulator, the
+          example student and every other example number were made up for learning. None of it
+          comes from real patients or real people.
+        </p>
+        <p>
+          The facts you learn are different: they are summarised from the WHO, the American Heart
+          Association, the CDC and the NHLBI, and each one links to its source so you can check it.
         </p>
         <p>
           The app has no accounts and does not save, track or send anything you type, such as a

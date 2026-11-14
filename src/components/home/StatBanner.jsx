@@ -2,6 +2,7 @@
 import { Link } from 'react-router';
 import { modules } from '../../content/modules';
 import { stats } from '../../content/stats';
+import ExternalLink from '../ExternalLink';
 
 export default function StatBanner() {
   const habitsModule = modules.find((m) => m.theme === 'habits');
@@ -16,11 +17,9 @@ export default function StatBanner() {
             <li key={stat.value} className="stat">
               <span className="stat-value">{stat.value}</span>
               <span className="stat-label">{stat.label}</span>
-              <a className="stat-source" href={stat.href} target="_blank" rel="noreferrer">
+              <ExternalLink className="stat-source" href={stat.href}>
                 Source: {stat.source}
-                {' '}
-                <span className="visually-hidden">(opens in a new tab)</span>
-              </a>
+              </ExternalLink>
             </li>
           ))}
         </ul>

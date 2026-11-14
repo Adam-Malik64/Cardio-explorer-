@@ -17,20 +17,22 @@ export default function PulseCounter() {
   const [error, setError] = useState('');
   const [result, setResult] = useState(null);
 
-  // Tick once a second while running.
+  // Tick once a second while running; stop and announce when time is up. The countdown
+  // lives in this effect's closure, so all state updates happen in the interval callback.
   useEffect(() => {
     if (!running) return undefined;
-    const timer = setInterval(() => setSecondsLeft((s) => Math.max(s - 1, 0)), 1000);
+    let remaining = COUNT_SECONDS;
+    const timer = setInterval(() => {
+      remaining -= 1;
+      setSecondsLeft(remaining);
+      if (remaining <= 0) {
+        clearInterval(timer);
+        setRunning(false);
+        setTimerStatus("Time's up. Enter your count.");
+      }
+    }, 1000);
     return () => clearInterval(timer);
   }, [running]);
-
-  // Stop and announce when time is up.
-  useEffect(() => {
-    if (running && secondsLeft === 0) {
-      setRunning(false);
-      setTimerStatus("Time's up. Enter your count.");
-    }
-  }, [running, secondsLeft]);
 
   // One toggle button (same element) so keyboard focus never jumps.
   function toggleTimer() {
@@ -93,7 +95,7 @@ export default function PulseCounter() {
         <p className="pulse-timer-display" data-testid="timer-display">
           <span className="pulse-timer-number">{secondsLeft}</span> seconds left
         </p>
-        <button type="button" className="button" onClick={toggleTimer} aria-pressed={running}>
+        <button type="button" className="button" onClick={toggleTimer}>
           {running ? 'Stop timer' : `Start ${COUNT_SECONDS}-second count`}
         </button>
         {/* Announces start / stop / finish only, not every second */}
@@ -147,6 +149,20 @@ export default function PulseCounter() {
       <button type="button" className="button button-secondary pulse-reset" onClick={resetAll}>
         Reset
       </button>
+
+      <details className="pulse-howto">
+        <summary>How this works (for teachers)</summary>
+        <p>
+          Counting for {COUNT_SECONDS} seconds and multiplying by {MULTIPLIER} gives beats per minute
+          (60 ÷ {COUNT_SECONDS} = {MULTIPLIER}). A one-beat miscount changes the answer by {MULTIPLIER} BPM,
+          so results are practice estimates. Counts outside 1–60 get a friendly “try again”
+          message rather than a result. Nothing a student types is saved or sent anywhere.
+        </p>
+        <p>
+          The heart rate zones below use simulated numbers for an example 16-year-old, not real
+          data.
+        </p>
+      </details>
     </section>
   );
 }

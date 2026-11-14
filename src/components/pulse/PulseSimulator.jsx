@@ -1,11 +1,13 @@
 // Heart Rate Zones & Pulse Simulator (Issue #2).
 // Students pick an activity level and see the simulated BPM, the heart-rate zone and an
 // explanation. Values update instantly; the beating-heart animation is skipped when the
-// visitor prefers reduced motion or presses "Pause animation".
-import { useState } from 'react';
+// visitor prefers reduced motion or presses "Pause heart animation".
+import { useId, useState } from 'react';
+import { SourceList } from '../ExternalLink';
 import { activityLevels, DEMO_AGE, DEMO_MAX_BPM, sources } from '../../mocks/heartRateZones';
 
 export default function PulseSimulator() {
+  const titleId = useId();
   const [levelId, setLevelId] = useState('rest');
   // Start paused when the visitor has asked the device for reduced motion.
   const [paused, setPaused] = useState(
@@ -15,8 +17,8 @@ export default function PulseSimulator() {
   const percentOfMax = Math.round((level.bpm / DEMO_MAX_BPM) * 100);
 
   return (
-    <section className="card simulator" aria-labelledby="simulator-title">
-      <h2 id="simulator-title">Heart rate zones</h2>
+    <section className="card simulator" aria-labelledby={titleId}>
+      <h2 id={titleId}>Heart rate zones</h2>
       <p className="muted">
         Example student, age {DEMO_AGE}. Simulated data, not real patient data. The estimated
         maximum heart rate is 220 − age = {DEMO_MAX_BPM} BPM; real maximums vary from person to
@@ -70,7 +72,6 @@ export default function PulseSimulator() {
       <button
         type="button"
         className="button button-secondary pause-toggle"
-        aria-pressed={paused}
         onClick={() => setPaused((p) => !p)}
       >
         {paused ? 'Play heart animation' : 'Pause heart animation'}
@@ -78,16 +79,7 @@ export default function PulseSimulator() {
 
       <p className="sim-sources">
         Zone ranges based on{' '}
-        {sources.map((s, i) => (
-          <span key={s.href}>
-            {i > 0 && ' and '}
-            <a href={s.href} target="_blank" rel="noreferrer">
-              {s.label}
-              {' '}
-              <span className="visually-hidden">(opens in a new tab)</span>
-            </a>
-          </span>
-        ))}
+        <SourceList items={sources} />
         .
       </p>
     </section>

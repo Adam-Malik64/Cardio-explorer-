@@ -7,28 +7,28 @@ import PulseSimulator from './PulseSimulator';
 afterEach(cleanup);
 
 describe('PulseSimulator', () => {
-  it('AC1: selecting Moderate shows ~130 BPM, the Aerobic / Moderate Zone badge and an explanation', async () => {
+  it('AC1: selecting Moderate shows ~140 BPM, the Moderate Zone badge and an explanation', async () => {
     const user = userEvent.setup();
     render(<PulseSimulator />);
 
     await user.click(screen.getByRole('button', { name: 'Moderate' }));
 
     expect(screen.getByRole('button', { name: 'Moderate' })).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByTestId('bpm-value')).toHaveTextContent('130');
-    expect(screen.getByTestId('zone-badge')).toHaveTextContent('Aerobic / Moderate Zone');
-    expect(screen.getByTestId('zone-explanation')).toHaveTextContent(/aerobic zone/i);
+    expect(screen.getByTestId('bpm-value')).toHaveTextContent('140');
+    expect(screen.getByTestId('zone-badge')).toHaveTextContent('Moderate Zone');
+    expect(screen.getByTestId('zone-explanation')).toHaveTextContent(/50–70%/);
   });
 
   it('every activity level updates the BPM and zone', async () => {
     const user = userEvent.setup();
     render(<PulseSimulator />);
-    const expected = { Rest: '70', Light: '100', Moderate: '130', Hard: '165' };
+    const expected = { Rest: '70', Light: '100', Moderate: '140', Hard: '165' };
 
     for (const [label, bpm] of Object.entries(expected)) {
       await user.click(screen.getByRole('button', { name: label }));
       expect(screen.getByTestId('bpm-value')).toHaveTextContent(bpm);
     }
-    expect(screen.getByTestId('zone-badge')).toHaveTextContent('Vigorous / Anaerobic Zone');
+    expect(screen.getByTestId('zone-badge')).toHaveTextContent('Vigorous Zone');
   });
 
   it('AC2: with animation paused, switching levels updates values immediately and the heart stops pulsing', async () => {
@@ -36,13 +36,13 @@ describe('PulseSimulator', () => {
     render(<PulseSimulator />);
 
     await user.click(screen.getByRole('button', { name: 'Pause heart animation' }));
-    expect(screen.getByRole('button', { name: 'Play heart animation' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'Play heart animation' })).not.toHaveAttribute('aria-pressed');
     expect(screen.getByTestId('sim-heart')).toHaveClass('paused');
 
     await user.click(screen.getByRole('button', { name: 'Hard' }));
     // Updated synchronously: no count-up or delayed transition
     expect(screen.getByTestId('bpm-value')).toHaveTextContent('165');
-    expect(screen.getByTestId('zone-badge')).toHaveTextContent('Vigorous / Anaerobic Zone');
+    expect(screen.getByTestId('zone-badge')).toHaveTextContent('Vigorous Zone');
     expect(screen.getByTestId('sim-heart')).toHaveClass('paused');
   });
 
@@ -80,7 +80,7 @@ describe('PulseSimulator: reduced motion and announcements', () => {
     render(<PulseSimulator />);
     await user.click(screen.getByRole('button', { name: 'Moderate' }));
     expect(screen.getByTestId('sim-summary')).toHaveTextContent(
-      'Moderate activity: about 130 beats per minute, Aerobic / Moderate Zone.',
+      'Moderate activity: about 140 beats per minute, Moderate Zone.',
     );
     expect(screen.getByText(/Example student, age 16\. Simulated data/)).toBeInTheDocument();
     expect(screen.getByText(/vary from person to person/)).toBeInTheDocument();

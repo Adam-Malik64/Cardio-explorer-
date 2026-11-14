@@ -1,12 +1,14 @@
-// /modules/:slug: one module. Shows its outline until the lesson content is written.
+// /modules/:slug: one module: its outline plus its interactive screen (see moduleInteractives).
 import { Link, useParams } from 'react-router';
 import { findModule, modules } from '../content/modules';
 import { moduleInteractives } from '../components/moduleInteractives';
 import NotFoundView from './NotFoundView';
+import useDocumentTitle from '../components/layout/useDocumentTitle';
 
 export default function ModuleView() {
   const { slug } = useParams();
   const module = findModule(slug);
+  useDocumentTitle(module ? module.title : 'Page not found');
 
   if (!module) return <NotFoundView />;
 

@@ -422,7 +422,7 @@ a {
   color: var(--color-muted);
 }
 
-.module-card h3 {
+.module-card :is(h2, h3) {
   font-size: 1.125rem;
   margin-bottom: var(--space-2);
 }
@@ -705,7 +705,7 @@ a {
   border-top: 4px solid var(--theme-color, var(--color-border));
 }
 
-.module-card h3 {
+.module-card :is(h2, h3) {
   font-size: 1.25rem;
 }
 
@@ -1296,10 +1296,18 @@ button.button {
   }
 }
 
-/* Two columns: heart's right side on the viewer's left, as in a standard diagram */
+/* Two columns: heart's right side on the viewer's left, as in a standard diagram.
+   Outflow valves on top (blood leaves the ventricles upwards), then atria, inflow valves,
+   ventricles. Each button sets its own grid-area from the mock data. */
 .heart-diagram {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas:
+    'rlabel llabel'
+    'pv av'
+    'ra la'
+    'tv mv'
+    'rv lv';
   gap: var(--space-2);
   padding: var(--space-3);
   border-radius: var(--radius);
@@ -1422,4 +1430,71 @@ button.button {
 
 .disclaimer-text {
   font-weight: 700;
+}
+
+.pulse-howto {
+  margin-top: var(--space-3);
+}
+
+.pulse-howto summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.glossary-list {
+  margin: 0;
+}
+
+.glossary-entry {
+  padding-block: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  overflow-wrap: anywhere;
+}
+
+.glossary-entry dt {
+  font-weight: 700;
+  font-size: 1.0625rem;
+}
+
+.glossary-entry-area {
+  font-weight: 400;
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+.glossary-entry dd {
+  margin: var(--space-1) 0 0;
+}
+
+.quiz-progress {
+  font-size: 1rem;
+  color: var(--color-muted);
+  text-transform: none;
+}
+
+.heart-side-right { grid-area: rlabel; }
+.heart-side-left { grid-area: llabel; }
+
+.explorer-prompt {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.tour-summary {
+  margin-top: var(--space-3);
+}
+
+.tour-summary summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tour-summary li {
+  margin-bottom: var(--space-2);
 }

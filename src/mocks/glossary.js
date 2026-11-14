@@ -3,29 +3,16 @@
 // facts, never a judgement about the reader. A second person should re-check each source
 // before release (see Issue #4, Definition of done).
 
-/** Learning areas used by the filter. Keys match the `theme` values in src/content/modules.js. */
-export const areas = {
-  anatomy: 'Anatomy',
-  biometrics: 'Biometrics',
-  habits: 'Habits',
-};
+import { themeLabels } from '../content/modules';
+import { sources } from './sources';
 
-const ahaHeartRate = {
-  label: 'American Heart Association: All about heart rate',
-  href: 'https://www.heart.org/en/health-topics/high-blood-pressure/the-facts-about-high-blood-pressure/all-about-heart-rate-pulse',
-};
-const ahaBloodPressure = {
-  label: 'American Heart Association: Understanding blood pressure readings',
-  href: 'https://www.heart.org/en/health-topics/high-blood-pressure/understanding-blood-pressure-readings',
-};
-const whoActivity = {
-  label: 'WHO: Physical activity fact sheet',
-  href: 'https://www.who.int/news-room/fact-sheets/detail/physical-activity',
-};
-const whoSalt = {
-  label: 'WHO: Sodium reduction fact sheet',
-  href: 'https://www.who.int/news-room/fact-sheets/detail/salt-reduction',
-};
+/** Learning areas used by the filter: the module themes from src/content/modules.js
+ * (single source of truth), minus 'reference', which is the glossary's own theme. */
+export const areas = Object.fromEntries(
+  Object.entries(themeLabels).filter(([key]) => key !== 'reference'),
+);
+
+const { ahaHeartRate, ahaBloodPressure, whoActivity, whoSodium: whoSalt } = sources;
 
 /**
  * @typedef {object} GlossaryTerm
@@ -128,7 +115,7 @@ export const terms = [
     area: 'habits',
     definition:
       'A mineral found in salt. The body needs a little, but too much over time is linked to higher blood pressure.',
-    fact: 'The WHO suggests adults eat less than 5 g of salt a day, about one teaspoon.',
+    fact: 'The WHO suggests adults eat less than 5 g of salt a day (about one teaspoon), and says the limit for children should be lower still.',
     source: whoSalt,
   },
   {

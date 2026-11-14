@@ -1,17 +1,10 @@
 // MOCK DATA: content for the 4-Chamber Heart & Blood Flow Explorer (Issue #1).
-// A simplified teaching model, not to scale. Facts summarised from the linked AHA and NHLBI
-// pages; a second person should re-check them before release (Issue #1, Definition of done).
+// A simplified teaching model, not to scale. Facts summarised from the linked NHLBI pages;
+// a second person should re-check them before release (Issue #1, Definition of done).
 
-export const sources = [
-  {
-    label: 'NHLBI: How the heart works',
-    href: 'https://www.nhlbi.nih.gov/health/heart/how-heart-works',
-  },
-  {
-    label: 'American Heart Association: How the healthy heart works',
-    href: 'https://www.heart.org/en/health-topics/congenital-heart-defects/about-congenital-heart-defects/how-the-healthy-heart-works',
-  },
-];
+import { sources as allSources } from './sources';
+
+export const sources = [allSources.nhlbiBloodFlow, allSources.nhlbiAnatomy];
 
 /**
  * @typedef {object} HeartPart
@@ -22,12 +15,19 @@ export const sources = [
  * @property {'oxygen-poor' | 'oxygen-rich'} blood
  * @property {string} job
  * @property {string} next                Where blood goes after this part
+ * @property {string} gridArea            Position in the diagram grid
  */
 
-/** @type {HeartPart[]} Listed in diagram reading order (top to bottom, viewer's left to right). */
+/**
+ * @type {HeartPart[]} Listed in blood-path order (right side first), which is also the
+ * keyboard Tab order. `gridArea` places each part in the diagram (see .heart-diagram in
+ * global.css): the pulmonary and aortic valves sit on top, where blood leaves the ventricles
+ * upwards into the arteries.
+ */
 export const parts = [
   {
     id: 'right-atrium',
+    gridArea: 'ra',
     name: 'Right atrium',
     kind: 'chamber',
     side: 'right',
@@ -36,16 +36,8 @@ export const parts = [
     next: 'Through the tricuspid valve into the right ventricle.',
   },
   {
-    id: 'left-atrium',
-    name: 'Left atrium',
-    kind: 'chamber',
-    side: 'left',
-    blood: 'oxygen-rich',
-    job: 'Collects oxygen-rich blood coming back from the lungs through the pulmonary veins.',
-    next: 'Through the mitral valve into the left ventricle.',
-  },
-  {
     id: 'tricuspid-valve',
+    gridArea: 'tv',
     name: 'Tricuspid valve',
     kind: 'valve',
     side: 'right',
@@ -54,16 +46,8 @@ export const parts = [
     next: 'Into the right ventricle.',
   },
   {
-    id: 'mitral-valve',
-    name: 'Mitral valve',
-    kind: 'valve',
-    side: 'left',
-    blood: 'oxygen-rich',
-    job: 'A valve with two flaps between the left atrium and left ventricle. It is also called the bicuspid valve and stops blood flowing backwards.',
-    next: 'Into the left ventricle.',
-  },
-  {
     id: 'right-ventricle',
+    gridArea: 'rv',
     name: 'Right ventricle',
     kind: 'chamber',
     side: 'right',
@@ -72,16 +56,8 @@ export const parts = [
     next: 'Through the pulmonary valve into the pulmonary artery, then to the lungs.',
   },
   {
-    id: 'left-ventricle',
-    name: 'Left ventricle',
-    kind: 'chamber',
-    side: 'left',
-    blood: 'oxygen-rich',
-    job: 'The strongest chamber, with the thickest muscle wall. It pumps oxygen-rich blood out to the whole body.',
-    next: 'Through the aortic valve into the aorta, then to the body.',
-  },
-  {
     id: 'pulmonary-valve',
+    gridArea: 'pv',
     name: 'Pulmonary valve',
     kind: 'valve',
     side: 'right',
@@ -90,7 +66,38 @@ export const parts = [
     next: 'Into the pulmonary artery, which leads to the lungs.',
   },
   {
+    id: 'left-atrium',
+    gridArea: 'la',
+    name: 'Left atrium',
+    kind: 'chamber',
+    side: 'left',
+    blood: 'oxygen-rich',
+    job: 'Collects oxygen-rich blood coming back from the lungs through the pulmonary veins.',
+    next: 'Through the mitral valve into the left ventricle.',
+  },
+  {
+    id: 'mitral-valve',
+    gridArea: 'mv',
+    name: 'Mitral valve',
+    kind: 'valve',
+    side: 'left',
+    blood: 'oxygen-rich',
+    job: 'A valve with two flaps between the left atrium and left ventricle. It is also called the bicuspid valve and stops blood flowing backwards.',
+    next: 'Into the left ventricle.',
+  },
+  {
+    id: 'left-ventricle',
+    gridArea: 'lv',
+    name: 'Left ventricle',
+    kind: 'chamber',
+    side: 'left',
+    blood: 'oxygen-rich',
+    job: 'The strongest chamber, with the thickest muscle wall. It pumps oxygen-rich blood out to the whole body.',
+    next: 'Through the aortic valve into the aorta, then to the body.',
+  },
+  {
     id: 'aortic-valve',
+    gridArea: 'av',
     name: 'Aortic valve',
     kind: 'valve',
     side: 'left',
@@ -101,9 +108,19 @@ export const parts = [
 ];
 
 /**
+ * @typedef {object} TourStep
+ * @property {string | null} part   Part id highlighted in the diagram, or null for lungs/body
+ * @property {string} [place]       Where the blood is when `part` is null ('Lungs' | 'Body')
+ * @property {string} loop          Which loop this step belongs to, in words
+ * @property {string} blood         Oxygen status in words; may show a change, e.g. 'a → b'
+ * @property {string} text          What happens at this step
+ */
+
+/**
  * One full trip around the double loop, starting where blood returns from the body.
  * `part` links a step to a part in the diagram; lungs/body steps have no part.
  */
+/** @type {TourStep[]} */
 export const tourSteps = [
   {
     part: 'right-atrium',

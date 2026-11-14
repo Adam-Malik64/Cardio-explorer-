@@ -246,7 +246,7 @@ All errors follow the same pattern:
 - **Given** a selection changes, **then** the new BPM and zone are announced through one `aria-live="polite"` region, for example "Moderate activity: about 140 beats per minute, moderate zone".
 - **Given** each activity, **then** the BPM and % values come from one mock data object in the module's content (not hard-coded in JSX). A unit test checks that BPM goes up from Rest to Light to Moderate to Hard, and that the % values match `BPM / (220 − 16)` within rounding.
 - **Given** the zone panel, **then** it clearly says the values are simulated for an example 16-year-old ("Example student, age 16. Simulated data."). The maximum is described as an estimate (220 − age) that varies from person to person.
-- **Given** zone thresholds are shown (CDC: moderate ≈ 64–76% and vigorous ≈ 77–93% of estimated maximum), **then** they match the cited CDC/AHA sources, and each source link has descriptive text and opens to a reputable page.
+- **Given** zone thresholds are shown (AHA target heart rate chart: moderate ≈ 50–70% and vigorous ≈ 70–85% of estimated maximum; the CDC page that gave 64–76% / 77–93% no longer exists), **then** they match the cited AHA source, the "talk test" wording matches the CDC intensity page, and each level's BPM falls inside its own stated range, and each source link has descriptive text and opens to a reputable page.
 - **Given** any zone, **then** the wording is descriptive ("your breathing gets faster and talking gets harder") and not a personal prescription ("you should train at…").
 
 ---
@@ -380,7 +380,7 @@ Students learning human biology find the link between everyday habits (food, act
   - **Given** I have chosen an option
   - **When** I activate "Check answer"
   - **Then** a feedback panel appears saying **"Correct"** or **"Not quite"** in text, names the correct option, and shows a 1 to 3 sentence explanation of how the habit affects the heart.
-  - **And** "Check answer" is disabled until an option is chosen.
+  - **And** if no option is chosen, "Check answer" stays enabled and shows the message "Choose an answer first." (an enabled button with a clear message is easier to discover with a screen reader than a disabled one).
 - **AC 1.4 Answer locked after checking**
   - **Given** I have checked an answer
   - **When** the feedback is showing
@@ -609,7 +609,7 @@ Filter
 **Acceptance criteria**
 
 1. **[RTL]** **Given** the Fact Cards view (a section of the Glossary page or a tab, see Open questions), **when** it renders, **then** each card's front shows the term name and its back shows the definition and fact. At first, only the fronts are exposed to assistive technology.
-2. **[RTL]** **Given** a card, **when** I inspect it, **then** the flip control is a native `<button>` with an accessible name that includes the term, for example "Show answer for Atrium", and `aria-pressed` or `aria-expanded` reflects the state.
+2. **[RTL]** **Given** a card, **when** I inspect it, **then** the flip control is a native `<button>` with an accessible name that includes the term, for example "Flip card for Atrium", and `aria-expanded` reflects the state (the name stays the same, so the state is not announced twice).
 3. **[RTL]** **Given** a card is face-down, **when** I click it, or focus it and press Enter or Space, **then** it flips to show the back, the state attribute becomes true, and the back content becomes available to assistive technology (it is no longer `aria-hidden` / `hidden` / `inert`).
 4. **[RTL]** **Given** a card is flipped, **when** I activate it again, **then** it flips back to the front, and the state attribute becomes false.
 5. **[RTL]** **Given** a card is flipped, **when** I check focus, **then** focus stays on the same control. It is not lost to `<body>` and does not move to another card.
