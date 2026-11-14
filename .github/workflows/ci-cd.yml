@@ -1,0 +1,89 @@
+# .github/workflows/ci-cd.yml
+# One pipeline: quality checks on every PR and push; deploy only after
+# checks pass on a push to dev, test or main.
+name: CI-CD
+
+on:
+  pull_request:
+    branches: [dev, test, main]
+  push:
+    branches: [dev, test, main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  quality:
+    name: quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Check production dependencies for known vulnerabilities
+        run: npm audit --omit=dev --audit-level=high
+
+  deploy:
+    name: deploy
+    needs: quality
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    # main -> production, test -> staging, dev -> development
+    environment: ${{ github.ref_name == 'main' && 'production' || (github.ref_name == 'test' && 'staging' || 'development') }}
+    env:
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+      TURNSTILE_SECRET_KEY: ${{ secrets.TURNSTILE_SECRET_KEY }}
+      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+      STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+      APP_ENV: ${{ vars.APP_ENV }}
+      APP_URL: ${{ vars.APP_URL }}
+      GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Run database migrations
+        run: npm run db:migrate
+      - name: Build frontend
+        run: npm run build
+        env:
+          VITE_APP_ENV: ${{ vars.APP_ENV }}
+          VITE_GOOGLE_CLIENT_ID: ${{ vars.GOOGLE_CLIENT_ID }}
+          VITE_TURNSTILE_SITE_KEY: ${{ vars.TURNSTILE_SITE_KEY }}
+          VITE_POSTHOG_KEY: ${{ vars.POSTHOG_KEY }}
+          VITE_POSTHOG_HOST: ${{ vars.POSTHOG_HOST }}
+      - name: Deploy to Netlify
+        run: |
+          if [ "$GITHUB_REF_NAME" = "main" ]; then
+            TARGET="--prod"
+          else
+            TARGET="--alias=$GITHUB_REF_NAME"
+          fi
+          npx netlify deploy $TARGET --no-build \
+            --dir=dist --functions=netlify/functions \
+            --message="$GITHUB_SHA" \
+            --env="APP_ENV=$APP_ENV" \
+            --env="APP_URL=$APP_URL" \
+            --env="GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID" \
+            --secret-env="DATABASE_URL=$DATABASE_URL" \
+            --secret-env="SESSION_SECRET=$SESSION_SECRET" \
+            --secret-env="TURNSTILE_SECRET_KEY=$TURNSTILE_SECRET_KEY" \
+            --secret-env="STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY" \
+            --secret-env="STRIPE_WEBHOOK_SECRET=$STRIPE_WEBHOOK_SECRET"
