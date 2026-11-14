@@ -2,8 +2,10 @@
 // "coming soon" placeholder on their page (see src/views/ModuleView.jsx).
 import PulseModule from './pulse/PulseModule';
 import HabitsQuizView from '../views/HabitsQuizView';
+import GlossaryView from '../views/GlossaryView';
 
 export const moduleInteractives = {
   'pulse-simulator': PulseModule,
   'habits-quiz': HabitsQuizView,
+  glossary: GlossaryView,
 };

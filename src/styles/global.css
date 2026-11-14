@@ -1108,3 +1108,172 @@ button.button {
 .quiz-takeaways li {
   margin-bottom: var(--space-2);
 }
+
+/* ---------- Glossary & fact cards (Issue #4) ---------- */
+.glossary {
+  margin-top: var(--space-4);
+}
+
+.glossary-controls {
+  display: grid;
+  gap: var(--space-3);
+  margin-block: var(--space-3);
+}
+
+@media (min-width: 720px) {
+  .glossary-controls {
+    grid-template-columns: 1fr auto;
+    align-items: start;
+  }
+}
+
+.glossary-search label {
+  display: block;
+  font-weight: 700;
+}
+
+.glossary-search input {
+  width: 100%;
+  min-height: 44px;
+  margin-top: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border: 2px solid var(--color-muted);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.glossary-hint {
+  margin: var(--space-1) 0 0;
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+.glossary-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.glossary-filter legend {
+  width: 100%;
+  margin-bottom: var(--space-1);
+  font-weight: 700;
+}
+
+.glossary-filter-option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border: 2px solid var(--color-border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.glossary-filter-option:has(input:checked) {
+  border-color: var(--theme-reference);
+  font-weight: 700;
+}
+
+.glossary-filter-option input {
+  accent-color: var(--theme-reference);
+}
+
+.glossary-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.glossary-count {
+  margin: 0;
+  font-weight: 600;
+}
+
+.glossary-empty {
+  padding: var(--space-4);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.fact-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fact-card-grid > li {
+  display: flex;
+}
+
+.fact-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-3);
+  border: 2px solid var(--color-border);
+  border-top: 6px solid var(--theme-reference);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  overflow-wrap: anywhere;
+}
+
+.fact-card.flipped {
+  background: var(--color-bg);
+  animation: fact-card-flip 0.25s ease-out;
+}
+
+@keyframes fact-card-flip {
+  from { transform: rotateY(70deg); opacity: 0.4; }
+  to { transform: rotateY(0); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fact-card.flipped {
+    animation: none;
+  }
+}
+
+.fact-card-area {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.fact-card-term {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.fact-card-back p,
+.fact-card-prompt {
+  margin: 0 0 var(--space-2);
+}
+
+.fact-card-source {
+  font-size: 0.875rem;
+}
+
+.fact-card .button {
+  margin-top: auto;
+  align-self: flex-start;
+}
