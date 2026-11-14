@@ -1,5 +1,5 @@
 // Site header: brand link plus main navigation, which collapses into a menu button on small screens.
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router';
 
 const navItems = [
@@ -12,8 +12,13 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { pathname } = useLocation();
 
-  // Close the mobile menu whenever the user navigates.
-  useEffect(() => setMenuOpen(false), [pathname]);
+  // Close the mobile menu whenever the user navigates (adjusting state during render,
+  // per https://react.dev/learn/you-might-not-need-an-effect).
+  const [lastPath, setLastPath] = useState(pathname);
+  if (pathname !== lastPath) {
+    setLastPath(pathname);
+    setMenuOpen(false);
+  }
 
   return (
     <header className="site-header">
