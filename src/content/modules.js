@@ -77,3 +77,11 @@ export const modules = [
 export function findModule(slug) {
   return modules.find((m) => m.slug === slug);
 }
+
+/** Display names for each module theme (learning area). Used by filters and labels. */
+export const themeLabels = {
+  anatomy: 'Anatomy',
+  biometrics: 'Biometrics',
+  habits: 'Habits',
+  reference: 'Reference',
+};

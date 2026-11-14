@@ -3,7 +3,18 @@
 // The only score is a knowledge score. The quiz never asks about the student's own health
 // and never gives a personal risk verdict. Nothing is stored or sent anywhere.
 import { useEffect, useId, useRef, useState } from 'react';
+import ExternalLink from '../components/ExternalLink';
 import { questions, takeaways, topics } from '../mocks/habitsQuiz';
+
+/** Shown before starting and on the results screen (Issue #3, AC 5.1 and 5.2). */
+function QuizNotice() {
+  return (
+    <p className="edu-notice" role="note">
+      This quiz teaches general facts about habits and the heart. It does not check your own
+      health. If you have questions about your health, talk to a parent, school nurse or doctor.
+    </p>
+  );
+}
 
 export default function HabitsQuizView({ questionBank = questions }) {
   const id = useId();
@@ -14,7 +25,7 @@ export default function HabitsQuizView({ questionBank = questions }) {
   const [results, setResults] = useState([]); // true/false per answered question
   const [finished, setFinished] = useState(false);
   const headingRef = useRef(null);
-  const nextRef = useRef(null);
+  const feedbackRef = useRef(null);
   const started = useRef(false);
 
   // Move focus to the new heading when the question or screen changes (not on first load).
@@ -26,9 +37,10 @@ export default function HabitsQuizView({ questionBank = questions }) {
     headingRef.current?.focus();
   }, [index, finished]);
 
-  // The Check button disappears once an answer is checked, so keep keyboard focus on Next.
+  // The Check button disappears once an answer is checked, so move focus to the feedback:
+  // it is read out first, and Next is the very next Tab stop.
   useEffect(() => {
-    if (checked) nextRef.current?.focus();
+    if (checked) feedbackRef.current?.focus();
   }, [checked]);
 
   if (questionBank.length === 0) {
@@ -90,6 +102,7 @@ export default function HabitsQuizView({ questionBank = questions }) {
           This score shows what you know about heart-healthy habits. It says nothing about your
           own health.
         </p>
+        <QuizNotice />
         <h3>Key ideas to remember</h3>
         <ul className="quiz-takeaways">
           {topicIds.map((t) => (
@@ -107,12 +120,12 @@ export default function HabitsQuizView({ questionBank = questions }) {
 
   return (
     <section className="card quiz" aria-labelledby={`${id}-title`}>
-      <p className="eyebrow">
-        Question {index + 1} of {questionBank.length} · {topics[question.topic] ?? question.topic}
-      </p>
-      <h2 id={`${id}-title`} ref={headingRef} tabIndex={-1}>
-        Heart habits quiz
-      </h2>
+      <h2 id={`${id}-title`}>Heart habits quiz</h2>
+      {index === 0 && !checked && <QuizNotice />}
+      {/* Focus lands here on each new question, so it says where you are */}
+      <h3 className="quiz-progress" ref={headingRef} tabIndex={-1}>
+        Question {index + 1} of {questionBank.length}: {topics[question.topic] ?? question.topic}
+      </h3>
 
       <form onSubmit={handleCheck} noValidate>
         <fieldset className="quiz-options" disabled={checked}>
@@ -162,7 +175,7 @@ export default function HabitsQuizView({ questionBank = questions }) {
 
       <div aria-live="polite" data-testid="quiz-feedback">
         {checked && (
-          <div className="quiz-feedback">
+          <div className="quiz-feedback" ref={feedbackRef} tabIndex={-1}>
             <p className="quiz-verdict">
               <strong>{isCorrect ? 'Correct!' : 'Not quite.'}</strong>
               {!isCorrect && ` The answer is: ${correctOption.text}.`}
@@ -170,18 +183,14 @@ export default function HabitsQuizView({ questionBank = questions }) {
             <p>{question.explanation}</p>
             <p className="muted">
               Source:{' '}
-              <a href={question.source.href} target="_blank" rel="noreferrer">
-                {question.source.label}
-                {' '}
-                <span className="visually-hidden">(opens in a new tab)</span>
-              </a>
+              <ExternalLink href={question.source.href}>{question.source.label}</ExternalLink>
             </p>
           </div>
         )}
       </div>
 
       {checked && (
-        <button type="button" className="button" onClick={handleNext} ref={nextRef}>
+        <button type="button" className="button" onClick={handleNext}>
           {isLast ? 'See results' : 'Next question'}
         </button>
       )}

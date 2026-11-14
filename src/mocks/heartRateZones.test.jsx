@@ -80,3 +80,23 @@ describe('displayed % of max matches round(bpm / 204 × 100)', () => {
     }
   });
 });
+
+describe('zone data stays consistent with its own ranges', () => {
+  it('every level’s % of estimated max falls inside its stated min/max range', () => {
+    for (const level of activityLevels) {
+      const pct = (level.bpm / DEMO_MAX_BPM) * 100;
+      expect(pct, level.id).toBeGreaterThanOrEqual(level.minPct);
+      expect(pct, level.id).toBeLessThanOrEqual(level.maxPct);
+    }
+  });
+
+  it('the moderate and vigorous explanations quote the same ranges as the data', () => {
+    for (const level of activityLevels.filter((l) => ['moderate', 'hard'].includes(l.id))) {
+      expect(level.explanation).toContain(`${level.minPct}–${level.maxPct}%`);
+    }
+  });
+
+  it('never labels the vigorous zone as fully anaerobic', () => {
+    expect(JSON.stringify(activityLevels)).not.toMatch(/Anaerobic Zone/);
+  });
+});

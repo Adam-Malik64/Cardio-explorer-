@@ -3,7 +3,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import GlossaryView from './GlossaryView';
-import { filterTerms, MAX_QUERY_LENGTH, normaliseQuery } from '../components/glossary/filterTerms';
+import { filterTerms, MAX_QUERY_LENGTH, normaliseQuery, normaliseText } from '../components/glossary/filterTerms';
+import { themeLabels } from '../content/modules';
 import { areas, terms } from '../mocks/glossary';
 
 afterEach(() => {
@@ -143,13 +144,13 @@ describe('GlossaryView', () => {
     const pulse = terms.find((t) => t.id === 'pulse');
     expect(screen.queryByText(pulse.definition)).not.toBeInTheDocument();
 
-    const button = screen.getByRole('button', { name: 'Show definition of Pulse' });
-    expect(button).toHaveAttribute('aria-pressed', 'false');
+    const button = screen.getByRole('button', { name: 'Flip card for Pulse' });
+    expect(button).toHaveAttribute('aria-expanded', 'false');
     button.focus();
     await user.keyboard('{Enter}');
     expect(screen.getByText(pulse.definition)).toBeInTheDocument();
-    const hide = screen.getByRole('button', { name: 'Hide definition of Pulse' });
-    expect(hide).toHaveAttribute('aria-pressed', 'true');
+    const hide = screen.getByRole('button', { name: 'Flip card for Pulse' });
+    expect(hide).toHaveAttribute('aria-expanded', 'true');
     expect(hide).toHaveFocus();
 
     await user.keyboard(' '); // Space flips back
@@ -159,14 +160,14 @@ describe('GlossaryView', () => {
   it('hovering never flips a card', async () => {
     const user = userEvent.setup();
     render(<GlossaryView />);
-    await user.hover(screen.getByRole('button', { name: 'Show definition of Pulse' }));
+    await user.hover(screen.getByRole('button', { name: 'Flip card for Pulse' }));
     expect(screen.queryByTestId('back-pulse')).not.toBeInTheDocument();
   });
 
   it('shows a source link for facts, separate from the flip button', async () => {
     const user = userEvent.setup();
     render(<GlossaryView />);
-    await user.click(screen.getByRole('button', { name: 'Show definition of Resting heart rate' }));
+    await user.click(screen.getByRole('button', { name: 'Flip card for Resting heart rate' }));
     const back = screen.getByTestId('back-resting-heart-rate');
     expect(within(back).getByRole('link')).toHaveAttribute('href', expect.stringMatching(/^https:/));
   });
@@ -174,10 +175,10 @@ describe('GlossaryView', () => {
   it('Reset all cards flips every card back', async () => {
     const user = userEvent.setup();
     render(<GlossaryView />);
-    await user.click(screen.getByRole('button', { name: 'Show definition of Pulse' }));
-    await user.click(screen.getByRole('button', { name: 'Show definition of Valve' }));
+    await user.click(screen.getByRole('button', { name: 'Flip card for Pulse' }));
+    await user.click(screen.getByRole('button', { name: 'Flip card for Valve' }));
     await user.click(screen.getByRole('button', { name: 'Reset all cards' }));
-    expect(screen.queryAllByRole('button', { name: /^Hide definition/ })).toHaveLength(0);
+    expect(screen.getAllByRole('button', { name: /^Flip card/ }).every((b) => b.getAttribute('aria-expanded') === 'false')).toBe(true);
   });
 
   it('edge case: an empty term list shows a friendly message', () => {
@@ -195,5 +196,44 @@ describe('GlossaryView', () => {
     expect(localStorage.length).toBe(0);
     expect(sessionStorage.length).toBe(0);
     expect(fetchSpy).not.toHaveBeenCalled();
+  });
+});
+
+describe('Glossary review fixes', () => {
+  it('learning areas come from the module themes in modules.js (minus reference)', () => {
+    const expected = Object.fromEntries(Object.entries(themeLabels).filter(([k]) => k !== 'reference'));
+    expect(areas).toEqual(expected);
+  });
+
+  it('matches curly apostrophes and accents with their plain equivalents', () => {
+    expect(normaliseText('Heart’s  CAFÉ')).toBe("heart's cafe");
+    expect(filterTerms(terms, "heart's").map((t) => t.id)).toContain('ecg'); // ECG definition says “heart’s”
+    expect(filterTerms(terms, 'heart’s')).toEqual(filterTerms(terms, "heart's"));
+  });
+
+  it('the no-results message suggests checking the spelling', async () => {
+    const user = userEvent.setup();
+    render(<GlossaryView />);
+    await user.type(search(), 'zzzz');
+    expect(screen.getByTestId('glossary-empty')).toHaveTextContent('Check the spelling');
+  });
+
+  it('A–Z list view shows every term as a description list, filtered the same way', async () => {
+    const user = userEvent.setup();
+    render(<GlossaryView />);
+    await user.click(screen.getByLabelText('A–Z list'));
+    const list = screen.getByTestId('glossary-list');
+    expect(list.tagName).toBe('DL');
+    expect(list.querySelectorAll('dt')).toHaveLength(terms.length);
+    expect(screen.queryByRole('button', { name: /^Flip card/ })).not.toBeInTheDocument();
+
+    await user.type(search(), 'valve');
+    const expected = filterTerms(terms, 'valve');
+    expect(list.querySelectorAll('dt')).toHaveLength(expected.length);
+  });
+
+  it('shows the not-medical-advice notice near the top', () => {
+    render(<GlossaryView />);
+    expect(screen.getByRole('note')).toHaveTextContent(/Not medical advice/);
   });
 });

@@ -29,6 +29,8 @@ describe('mock question bank', () => {
       expect(ids).toContain(q.answer);
       expect(q.explanation.length).toBeGreaterThan(20);
       expect(q.source.href).toMatch(/^https:\/\//);
+      expect(q.source.organisation).toBeTruthy();
+      expect(q.source).toHaveProperty('checked');
     }
   });
 
@@ -83,19 +85,41 @@ describe('HabitsQuizView', () => {
     expect(screen.queryByRole('button', { name: 'Check answer' })).not.toBeInTheDocument();
   });
 
-  it('works with the keyboard only: arrows pick, Enter checks, focus lands on Next', async () => {
+  it('works with the keyboard only: arrows pick, Enter checks, feedback then Next get focus', async () => {
     const user = userEvent.setup();
     render(<HabitsQuizView />);
-    await user.tab(); // into the radio group (heading is not in the tab order)
+    await user.tab(); // into the radio group (headings are not in the tab order)
     expect(screen.getAllByRole('radio')[0]).toHaveFocus();
     await user.keyboard('{ArrowDown}');
     expect(screen.getAllByRole('radio')[1]).toBeChecked();
     await user.keyboard('{Enter}');
-    const next = screen.getByRole('button', { name: 'Next question' });
-    expect(next).toHaveFocus();
+    // Focus moves to the feedback so it is read first; Next is the next Tab stop
+    expect(screen.getByTestId('quiz-feedback').firstChild).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole('link')).toHaveFocus(); // the source link inside the feedback
+    await user.tab();
+    expect(screen.getByRole('button', { name: 'Next question' })).toHaveFocus();
     await user.keyboard('{Enter}');
-    expect(screen.getByText(`Question 2 of ${questions.length}`, { exact: false })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Heart habits quiz' })).toHaveFocus();
+    // The focused heading says where you are
+    const heading = screen.getByRole('heading', { level: 3, name: new RegExp(`^Question 2 of ${questions.length}: `) });
+    expect(heading).toHaveFocus();
+    expect(heading).toHaveTextContent(topics[questions[1].topic]);
+  });
+
+  it('shows the education notice before starting and on the results screen', async () => {
+    const user = userEvent.setup();
+    render(<HabitsQuizView questionBank={questions.slice(0, 1)} />);
+    expect(screen.getByRole('note')).toHaveTextContent('It does not check your own health');
+    await user.click(screen.getByLabelText(rightText(first)));
+    await user.click(screen.getByRole('button', { name: 'Check answer' }));
+    await user.click(screen.getByRole('button', { name: 'See results' }));
+    expect(screen.getByRole('note')).toHaveTextContent('It does not check your own health');
+  });
+
+  it('the quiz has no text or number inputs (no personal data entry)', () => {
+    render(<HabitsQuizView />);
+    expect(screen.queryAllByRole('textbox')).toHaveLength(0);
+    expect(screen.queryAllByRole('spinbutton')).toHaveLength(0);
   });
 
   it('a full run gives a knowledge score, topic takeaways and Try again resets', async () => {

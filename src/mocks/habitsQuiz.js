@@ -3,6 +3,7 @@
 // the student's own body, habits or family, and nothing here is a personal risk score.
 // Facts are summarised from the linked sources; a second person should re-check each
 // source before release (see Issue #3, Definition of done).
+import { sources as sharedSources } from './sources';
 
 export const topics = {
   food: 'Food & drink',
@@ -21,44 +22,7 @@ export const takeaways = {
   tobacco: 'Nicotine raises heart rate and blood pressure, and smoking damages blood vessels.',
 };
 
-const sources = {
-  whoSalt: {
-    label: 'WHO: Sodium reduction fact sheet',
-    href: 'https://www.who.int/news-room/fact-sheets/detail/salt-reduction',
-  },
-  ahaSugar: {
-    label: 'American Heart Association: Added sugars',
-    href: 'https://www.heart.org/en/healthy-living/healthy-eating/eat-smart/sugar/added-sugars',
-  },
-  whoActivity: {
-    label: 'WHO: Physical activity fact sheet',
-    href: 'https://www.who.int/news-room/fact-sheets/detail/physical-activity',
-  },
-  ahaHeartRate: {
-    label: 'American Heart Association: All about heart rate',
-    href: 'https://www.heart.org/en/health-topics/high-blood-pressure/the-facts-about-high-blood-pressure/all-about-heart-rate-pulse',
-  },
-  cdcSleep: {
-    label: 'CDC: About sleep',
-    href: 'https://www.cdc.gov/sleep/about/index.html',
-  },
-  nhlbiSleep: {
-    label: 'NHLBI: How sleep affects your health',
-    href: 'https://www.nhlbi.nih.gov/health/sleep-deprivation/health-effects',
-  },
-  ahaStress: {
-    label: 'American Heart Association: Stress and heart health',
-    href: 'https://www.heart.org/en/healthy-living/healthy-lifestyle/stress-management/stress-and-heart-health',
-  },
-  whoTobacco: {
-    label: 'WHO: Tobacco fact sheet',
-    href: 'https://www.who.int/news-room/fact-sheets/detail/tobacco',
-  },
-  cdcVaping: {
-    label: 'CDC: E-cigarettes (vapes)',
-    href: 'https://www.cdc.gov/tobacco/e-cigarettes/index.html',
-  },
-};
+const sources = { ...sharedSources, whoSalt: sharedSources.whoSodium };
 
 /**
  * @typedef {object} QuizQuestion
@@ -84,7 +48,7 @@ export const questions = [
     ],
     answer: 'a',
     explanation:
-      'Too much sodium (from salt) is linked to higher blood pressure, which makes the heart and blood vessels work harder. The WHO suggests adults eat less than 5 g of salt a day, about one teaspoon.',
+      'Too much sodium (from salt) is linked to higher blood pressure, which makes the heart and blood vessels work harder. The WHO suggests adults eat less than 5 g of salt a day (about one teaspoon), and says the limit for children should be lower still.',
     source: sources.whoSalt,
   },
   {
@@ -132,7 +96,7 @@ export const questions = [
   {
     id: 'teen-sleep',
     topic: 'sleep',
-    question: 'How much sleep do experts recommend for teenagers aged 13 to 18?',
+    question: 'How much sleep does the CDC recommend for teenagers aged 13 to 17?',
     options: [
       { id: 'a', text: '5 to 6 hours a night' },
       { id: 'b', text: '8 to 10 hours a night' },
@@ -140,7 +104,7 @@ export const questions = [
     ],
     answer: 'b',
     explanation:
-      'Sleep experts, with guidance shared by the CDC, recommend 8 to 10 hours of sleep in every 24 hours for teens aged 13 to 18.',
+      'The CDC recommends 8 to 10 hours of sleep in every 24 hours for teens aged 13 to 17.',
     source: sources.cdcSleep,
   },
   {
@@ -210,7 +174,7 @@ export const questions = [
     ],
     answer: 'a',
     explanation:
-      'Most vapes contain nicotine, which is highly addictive and raises heart rate and blood pressure. Vape aerosol is not just water vapour. Talking to a trusted adult is a good first step if you want help quitting.',
+      'Most vapes contain nicotine, which is highly addictive and raises heart rate and blood pressure. Vape aerosol is not just water vapour. If you or a friend want help quitting, talking to a trusted adult is a good first step.',
     source: sources.cdcVaping,
   },
 ];

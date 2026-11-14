@@ -1,15 +1,24 @@
 // Search + filter rules for the glossary (Issue #4). Pure functions so they can be unit tested.
-// The query is matched as plain text (never as a regex or HTML), ignoring case and extra spaces.
+// The query is matched as plain text (never as a regex or HTML). Matching ignores case,
+// extra spaces, accents and curly vs straight quotes, so "heart's" finds "heart’s".
 
 export const MAX_QUERY_LENGTH = 100;
 
-/** Trims, collapses runs of whitespace, lowercases and caps the length. */
-export function normaliseQuery(query) {
-  return String(query ?? '')
-    .slice(0, MAX_QUERY_LENGTH)
-    .trim()
+/** Lowercases, strips accents, straightens quotes and collapses whitespace. */
+export function normaliseText(text) {
+  return String(text ?? '')
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[‘’‛′]/g, "'")
+    .replace(/[“”″]/g, '"')
     .replace(/\s+/g, ' ')
+    .trim()
     .toLowerCase();
+}
+
+/** Caps the length, then normalises. */
+export function normaliseQuery(query) {
+  return normaliseText(String(query ?? '').slice(0, MAX_QUERY_LENGTH));
 }
 
 /**
@@ -22,6 +31,6 @@ export function filterTerms(terms, query, area = 'all') {
   return terms.filter((t) => {
     if (area !== 'all' && t.area !== area) return false;
     if (q === '') return true;
-    return t.term.toLowerCase().includes(q) || t.definition.toLowerCase().includes(q);
+    return normaliseText(t.term).includes(q) || normaliseText(t.definition).includes(q);
   });
 }

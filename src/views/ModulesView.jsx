@@ -1,8 +1,10 @@
 // /modules: all four core modules.
 import ModuleCard from '../components/ModuleCard';
 import { modules } from '../content/modules';
+import useDocumentTitle from '../components/layout/useDocumentTitle';
 
 export default function ModulesView() {
+  useDocumentTitle('Learning modules');
   return (
     <div className="container page">
       <header className="page-header">
@@ -13,7 +15,7 @@ export default function ModulesView() {
       <ul className="card-grid feature-grid">
         {modules.map((module, index) => (
           <li key={module.slug}>
-            <ModuleCard module={module} index={index} />
+            <ModuleCard module={module} index={index} headingLevel={2} />
           </li>
         ))}
       </ul>

@@ -65,3 +65,29 @@ describe('Footer disclaimer on every page', () => {
     expect(within(footer).getByTestId('footer-disclaimer')).toHaveTextContent(EXACT);
   });
 });
+
+describe('Review fixes: data vs facts, talk-to line, page titles', () => {
+  it('separates synthetic demo data from sourced facts on the About page', () => {
+    renderAt('/about');
+    expect(screen.getByText(/All data in this app is synthetic, fake demo data/)).toBeInTheDocument();
+    expect(screen.getByText(/The facts you learn are different/)).toBeInTheDocument();
+  });
+
+  it('the footer points students to a trusted adult and explains data vs facts', () => {
+    renderAt('/');
+    const footer = screen.getByRole('contentinfo');
+    expect(within(footer).getByText(/talk to a parent, school nurse or doctor/)).toBeInTheDocument();
+    expect(within(footer).getByText(/Demo numbers are simulated; facts are sourced/)).toBeInTheDocument();
+  });
+
+  it.each([
+    ['/', 'Cardio Explorer'],
+    ['/modules', 'Learning modules · Cardio Explorer'],
+    ['/about', 'About · Cardio Explorer'],
+    ['/no-such-page', 'Page not found · Cardio Explorer'],
+    ...modules.map((m) => [`/modules/${m.slug}`, `${m.title} · Cardio Explorer`]),
+  ])('%s has a unique page title', (path, title) => {
+    renderAt(path);
+    expect(document.title).toBe(title);
+  });
+});

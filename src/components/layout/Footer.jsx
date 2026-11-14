@@ -39,8 +39,11 @@ export default function Footer() {
           <p className="disclaimer-text" data-testid="footer-disclaimer">
             {DISCLAIMER}
           </p>
+          <p>
+            If you have questions about your own heart, talk to a parent, school nurse or doctor.
+          </p>
           <p className="muted">
-            All data in this app is synthetic demo data. <Link to="/about">About this project</Link>
+            Demo numbers are simulated; facts are sourced. <Link to="/about">About this project</Link>
           </p>
         </div>
       </div>

@@ -1,8 +1,9 @@
 // One flip-style fact card (Issue #4). The front asks the student to recall the term; the
-// "flip" button reveals the definition and fact. It is a native button (Enter/Space/click,
-// never hover-only), and the back is only rendered once flipped, so screen readers do not
-// read the answer early.
+// "Flip card" button reveals the definition and fact. It is a native button (Enter/Space/click,
+// never hover-only) with a fixed name and aria-expanded for its state, and the back is only
+// rendered once flipped, so screen readers do not read the answer early.
 import { useId } from 'react';
+import ExternalLink from '../ExternalLink';
 import { areas } from '../../mocks/glossary';
 
 export default function FactCard({ term, flipped, onFlip }) {
@@ -24,12 +25,7 @@ export default function FactCard({ term, flipped, onFlip }) {
           )}
           {term.source && (
             <p className="fact-card-source">
-              Source:{' '}
-              <a href={term.source.href} target="_blank" rel="noreferrer">
-                {term.source.label}
-                {' '}
-                <span className="visually-hidden">(opens in a new tab)</span>
-              </a>
+              Source: <ExternalLink href={term.source.href}>{term.source.label}</ExternalLink>
             </p>
           )}
         </div>
@@ -37,10 +33,9 @@ export default function FactCard({ term, flipped, onFlip }) {
         <p className="fact-card-prompt muted">Can you remember what this means?</p>
       )}
 
-      <button type="button" className="button button-secondary" aria-pressed={flipped} onClick={onFlip}>
-        {flipped ? 'Hide definition' : 'Show definition'}
-        {' '}
-        <span className="visually-hidden">of {term.term}</span>
+      <button type="button" className="button button-secondary" aria-expanded={flipped} onClick={onFlip}>
+        Flip card{' '}
+        <span className="visually-hidden">for {term.term}</span>
       </button>
     </article>
   );
