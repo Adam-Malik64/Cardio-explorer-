@@ -172,7 +172,8 @@ export default function HabitsQuizView({ questionBank = questions }) {
               Source:{' '}
               <a href={question.source.href} target="_blank" rel="noreferrer">
                 {question.source.label}
-                <span className="visually-hidden"> (opens in a new tab)</span>
+                {' '}
+                <span className="visually-hidden">(opens in a new tab)</span>
               </a>
             </p>
           </div>

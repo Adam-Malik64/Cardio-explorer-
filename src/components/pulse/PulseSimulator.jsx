@@ -83,7 +83,8 @@ export default function PulseSimulator() {
             {i > 0 && ' and '}
             <a href={s.href} target="_blank" rel="noreferrer">
               {s.label}
-              <span className="visually-hidden"> (opens in a new tab)</span>
+              {' '}
+              <span className="visually-hidden">(opens in a new tab)</span>
             </a>
           </span>
         ))}

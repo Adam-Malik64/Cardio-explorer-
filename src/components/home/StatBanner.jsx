@@ -18,7 +18,8 @@ export default function StatBanner() {
               <span className="stat-label">{stat.label}</span>
               <a className="stat-source" href={stat.href} target="_blank" rel="noreferrer">
                 Source: {stat.source}
-                <span className="visually-hidden"> (opens in a new tab)</span>
+                {' '}
+                <span className="visually-hidden">(opens in a new tab)</span>
               </a>
             </li>
           ))}
