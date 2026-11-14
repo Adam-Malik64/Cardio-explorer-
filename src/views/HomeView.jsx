@@ -1,15 +1,16 @@
-// /: placeholder shell. The full landing page will replace this.
-import { Link } from 'react-router';
+// /: the landing page. Each section is a self-contained component in components/home/.
+import Hero from '../components/home/Hero';
+import FeatureGrid from '../components/home/FeatureGrid';
+import StatBanner from '../components/home/StatBanner';
+import useDocumentTitle from '../components/layout/useDocumentTitle';
 
 export default function HomeView() {
+  useDocumentTitle('');
   return (
-    <section className="page-shell">
-      <h1>Cardio Explorer</h1>
-      <p className="lead">Learn how your heart works and how to keep it healthy.</p>
-      <p className="placeholder-note">Landing page coming soon.</p>
-      <Link to="/modules" className="button">
-        Browse the modules
-      </Link>
-    </section>
+    <>
+      <Hero />
+      <FeatureGrid />
+      <StatBanner />
+    </>
   );
 }
