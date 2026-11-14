@@ -1,6 +1,7 @@
 // /modules/:slug: one module. Shows its outline until the lesson content is written.
 import { Link, useParams } from 'react-router';
 import { findModule, modules } from '../content/modules';
+import { moduleInteractives } from '../components/moduleInteractives';
 import NotFoundView from './NotFoundView';
 
 export default function ModuleView() {
@@ -12,6 +13,7 @@ export default function ModuleView() {
   const index = modules.indexOf(module);
   const prev = modules[index - 1];
   const next = modules[index + 1];
+  const Interactive = moduleInteractives[module.slug];
 
   return (
     <article className="container page module">
@@ -39,7 +41,11 @@ export default function ModuleView() {
         </ul>
       </section>
 
-      <p className="placeholder-note">The interactive version of this module is coming soon.</p>
+      {Interactive ? (
+        <Interactive />
+      ) : (
+        <p className="placeholder-note">The interactive version of this module is coming soon.</p>
+      )}
 
       <nav aria-label="Module" className="module-pager">
         {prev ? <Link to={`/modules/${prev.slug}`}>← {prev.title}</Link> : <span />}
