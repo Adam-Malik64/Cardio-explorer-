@@ -18,5 +18,9 @@ An interactive educational web application designed to teach students and genera
 ## Project notes
 - Product brief (audience, the 4 core features, success metrics): `BRIEF.md`. Build features to match it.
 - Stack: Vite + React (JavaScript/JSX) + React Router. Run with `npm run dev`, build with `npm run build`.
-- Modules and learning areas are defined only in `src/content/modules.js`.
+- The 4 core modules (matching BRIEF.md) are defined only in `src/content/modules.js`; landing-page stats (with sources) in `src/content/stats.js`.
+- Simulated/demo data (never real patient data) lives in `src/mocks/`; every cited source lives once in `src/mocks/sources.js`. Module theme labels come from `themeLabels` in `src/content/modules.js`.
+- Checks: `npm run lint` (ESLint), `npm test` (Vitest + React Testing Library + jest-axe, jsdom), `npm run build`.
+- External links: use `src/components/ExternalLink.jsx` (new tab + screen-reader note).
+- CI/CD: `.github/workflows/ci-cd.yml` runs lint, typecheck, test, build and a production `npm audit` on every PR/push to dev/test/main, then deploys to Netlify site `cardio-explorer-adam-malik` (dev → development alias, test → staging alias, main → production). Netlify settings, SPA fallback and security headers (strict CSP: no third-party scripts) are in `netlify.toml`; functions in `netlify/functions/` (only deployable files there; tests go in `netlify/`). Env vars are documented in `.env.example`; never commit real secrets.
 - Pages live in `src/views/`, shared layout in `src/components/layout/`, all styles in `src/styles/global.css` (design tokens on `:root`).

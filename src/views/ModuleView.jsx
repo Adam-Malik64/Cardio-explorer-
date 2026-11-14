@@ -1,27 +1,31 @@
-// /modules/:slug: one module. Shows its outline until the lesson content is written.
+// /modules/:slug: one module: its outline plus its interactive screen (see moduleInteractives).
 import { Link, useParams } from 'react-router';
-import { findCategory, findModule, modules } from '../content/modules';
+import { findModule, modules } from '../content/modules';
+import { moduleInteractives } from '../components/moduleInteractives';
 import NotFoundView from './NotFoundView';
+import useDocumentTitle from '../components/layout/useDocumentTitle';
 
 export default function ModuleView() {
   const { slug } = useParams();
   const module = findModule(slug);
+  useDocumentTitle(module ? module.title : 'Page not found');
 
   if (!module) return <NotFoundView />;
 
   const index = modules.indexOf(module);
   const prev = modules[index - 1];
   const next = modules[index + 1];
+  const Interactive = moduleInteractives[module.slug];
 
   return (
-    <article className="module">
+    <article className="container page module">
       <Link to="/modules" className="back-link">
         ← All modules
       </Link>
 
       <header className="page-header">
         <p className="eyebrow">
-          {findCategory(module.category)?.title} · Module {index + 1} of {modules.length}
+          {module.kind} · Module {index + 1} of {modules.length}
         </p>
         <h1>
           <span aria-hidden="true">{module.icon} </span>
@@ -31,7 +35,7 @@ export default function ModuleView() {
       </header>
 
       <section className="card">
-        <h2>Topics to cover</h2>
+        <h2>What you’ll explore</h2>
         <ul className="topic-list">
           {module.topics.map((topic) => (
             <li key={topic}>{topic}</li>
@@ -39,7 +43,11 @@ export default function ModuleView() {
         </ul>
       </section>
 
-      <p className="placeholder-note">Lesson content coming soon.</p>
+      {Interactive ? (
+        <Interactive />
+      ) : (
+        <p className="placeholder-note">The interactive version of this module is coming soon.</p>
+      )}
 
       <nav aria-label="Module" className="module-pager">
         {prev ? <Link to={`/modules/${prev.slug}`}>← {prev.title}</Link> : <span />}
