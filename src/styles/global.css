@@ -1410,3 +1410,16 @@ button.button {
 .explorer-sources {
   font-size: 0.875rem;
 }
+
+/* ---------- About page & disclaimer ---------- */
+.about-modules li {
+  margin-bottom: var(--space-2);
+}
+
+.about-disclaimer {
+  border-left: 6px solid var(--color-accent);
+}
+
+.disclaimer-text {
+  font-weight: 700;
+}

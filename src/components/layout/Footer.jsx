@@ -1,6 +1,7 @@
 // Site footer: brand, quick links to each module, and the "not medical advice" disclaimer.
 import { Link } from 'react-router';
 import { modules } from '../../content/modules';
+import { DISCLAIMER } from '../../content/disclaimer';
 
 export default function Footer() {
   return (
@@ -35,10 +36,11 @@ export default function Footer() {
 
         <div className="footer-disclaimer">
           <h2 className="footer-heading">Important</h2>
-          <p>
-            Cardio Explorer is for education only and is not medical advice. Talk to a healthcare
-            professional about your own heart health. In an emergency, call your local emergency
-            number.
+          <p className="disclaimer-text" data-testid="footer-disclaimer">
+            {DISCLAIMER}
+          </p>
+          <p className="muted">
+            All data in this app is synthetic demo data. <Link to="/about">About this project</Link>
           </p>
         </div>
       </div>
