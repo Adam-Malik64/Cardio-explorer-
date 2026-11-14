@@ -1,8 +1,8 @@
 # Cardio Explorer
 
-A responsive learning site about heart health, built with Vite, React (JavaScript) and React Router. It teaches cardiovascular anatomy, heart health habits and biometric indicators such as heart rate and ECG basics.
+A responsive learning site about heart health, built with Vite, React (JavaScript) and React Router. It is built for middle and high school students; see [BRIEF.md](BRIEF.md) for the product brief and its four core features.
 
-This is the starter scaffold: the layout, navigation and placeholder pages are in place, and the lesson content and full landing page come next.
+The layout, navigation and landing page are in place; each module page is a placeholder until its interactive feature is built.
 
 ## Run it
 
@@ -19,13 +19,15 @@ src/
   main.jsx              App entry: router + global styles
   App.jsx               Route table (all pages share the Layout)
   content/
-    modules.js          Learning areas and modules ← edit this to change modules
+    modules.js          The 4 core modules from BRIEF.md ← edit to change modules
+    stats.js            Sourced statistics for the landing page banner
   components/
     layout/             Layout, Header (with mobile menu), Footer
-    ModuleCard.jsx      Card shown on the Modules page
+    home/               Landing page sections: Hero, FeatureGrid, StatBanner
+    ModuleCard.jsx      Module card (landing page and Modules page)
   views/                One file per page
-    HomeView.jsx        /                 simple shell (landing page to come)
-    ModulesView.jsx     /modules          all modules, grouped by learning area
+    HomeView.jsx        /                 landing page: hero, feature grid, stats, footer
+    ModulesView.jsx     /modules          all four modules
     ModuleView.jsx      /modules/:slug    one module (placeholder content)
     AboutView.jsx       /about
     NotFoundView.jsx    any unknown URL
@@ -35,7 +37,7 @@ public/                 Static files (favicon)
 
 ## Changing the modules
 
-Every module is defined in `src/content/modules.js`. The Modules page, each module page and its previous/next links all read from that list, so adding, removing or reordering an entry there updates the whole site.
+Every module is defined in `src/content/modules.js`. The landing page, the Modules page, each module page, the footer and the previous/next links all read from that list, so adding, removing or reordering an entry there updates the whole site.
 
 ## Branching workflow
 

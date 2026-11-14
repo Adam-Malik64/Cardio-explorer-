@@ -1,7 +1,7 @@
 // /about: what the project is, plus the educational-use disclaimer.
 export default function AboutView() {
   return (
-    <>
+    <div className="container page">
       <header className="page-header">
         <h1>About</h1>
         <p className="lead">Cardio Explorer is a learning site about heart health.</p>
@@ -13,6 +13,6 @@ export default function AboutView() {
           nurse or other healthcare professional.
         </p>
       </section>
-    </>
+    </div>
   );
 }
